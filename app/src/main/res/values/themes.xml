@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Deportes50" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Cambiar el tema base a Material 3 -->
+    <style name="Theme.Deportes50" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Personaliza tu tema aquí -->
+    </style>
+
+    <style name="chipSel" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="chipBackgroundColor">#03A9F4</item>
+        <item name="chipStrokeColor">#FFEB3B</item>
+        <item name="chipStrokeWidth">2dp</item>
+    </style>
+
 </resources>

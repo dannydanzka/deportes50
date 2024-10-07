@@ -1,47 +1,98 @@
 package com.roberto.deportes50
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.roberto.deportes50.ui.theme.Deportes50Theme
+import android.view.View
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import java.text.DecimalFormat
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+    private lateinit var metros: EditText
+    private lateinit var pies: RadioButton
+    private lateinit var pulgadas: RadioButton
+    private lateinit var yardas: RadioButton
+    private lateinit var resultado: TextView
+    private lateinit var opciones: RadioGroup
+
+    private lateinit var obj: Convertidor
+    private val formatoDecimales: DecimalFormat = DecimalFormat("#.##")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Deportes50Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_main)
+
+        metros = findViewById(R.id.edtMetros)
+        pies = findViewById(R.id.rbtPies)
+        pulgadas = findViewById(R.id.rbtPulgadas)
+        yardas = findViewById(R.id.rbtYardas)
+        resultado = findViewById(R.id.txtResultado)
+        opciones = findViewById(R.id.rgpOpciones)
+
+        obj = Convertidor()
+    }
+
+    fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.ibtnConvertir -> btnConvertir()
+            R.id.ibtnMostrar -> btnMostrar()
+            R.id.ibtnLimpiar -> btnLimpiar()
         }
+    }
+
+    fun btnConvertir() {
+        if (metros.text.isNotEmpty()) {
+            obj.meter = metros.text.toString().toInt()
+            if (pies.isChecked) obj.calculateFeet()
+            if (pulgadas.isChecked) obj.calculateInch()
+            if (yardas.isChecked) obj.calculateYard()
+            Toast.makeText(applicationContext, "Metros convertidos.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(applicationContext, "Ingresa cantidad en metros.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun btnMostrar() {
+        val res = "Cantidad de metros convertida a: \n" +
+                "Pies: ${formatoDecimales.format(obj.feet)}\n" +
+                "Pulgadas: ${formatoDecimales.format(obj.inch)}\n" +
+                "Yardas: ${formatoDecimales.format(obj.yard)}"
+        resultado.text = res
+    }
+
+    fun btnLimpiar() {
+        metros.text = null
+        resultado.text = "Cantidad de metros convertida a:"
+        opciones.clearCheck()
+        metros.requestFocus()
+        obj = Convertidor()
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+class Convertidor {
+    var meter: Int = 0
+    var feet: Double = 0.0
+    var inch: Double = 0.0
+    var yard: Double = 0.0
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Deportes50Theme {
-        Greeting("Android")
+    fun calculateFeet() {
+        if (meter > 0) {
+            feet = meter * 3.2808
+        }
+    }
+
+    fun calculateInch() {
+        if (meter > 0) {
+            inch = meter * 39.3701
+        }
+    }
+
+    fun calculateYard() {
+        if (meter > 0) {
+            yard = meter * 1.09361
+        }
     }
 }
